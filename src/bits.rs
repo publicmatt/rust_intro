@@ -1,6 +1,63 @@
 /*
 bit calculator util functions
 */
+pub mod cli {
+    use std::io;
+    use super::*;
+    fn prompt_for_number(prompt: &str, stdin: &mut io::Stdin) -> String {
+        let mut buffer = String::new();
+        let mut parsed: bool = false;
+        while ! parsed {
+            println!("{}", prompt);
+            let ret = stdin.read_line(&mut buffer);
+            match ret {
+                Ok(n) => {
+                    if n != 4 {
+                        println!("input should be three bits, found {}", n-1);
+                        continue;
+                    }
+                    parsed = true;
+                },
+                Err(e) => {
+                    println!("input error: {}", e); 
+                    continue;
+                }
+
+            };
+        }
+        return buffer.trim().to_owned();
+    }
+    pub fn main() {
+        let mut buffer = String::new();
+        let mut stdin = io::stdin();
+        loop {
+            println!("input operator (NOT|OR|AND):");
+            stdin.read_line(&mut buffer).unwrap();
+            match buffer.trim() {
+                "NOT" => {
+                    let number = prompt_for_number("enter a number:",&mut stdin);
+                    buffer = three_bit_not(&number);
+                },
+                "OR" => {
+                    let first = prompt_for_number("enter first number:",&mut stdin);
+                    let second = prompt_for_number("enter another number:",&mut stdin);
+                    buffer = three_bit_or(&first, &second);
+                },
+                "AND" => {
+                    let first = prompt_for_number("enter first number:",&mut stdin);
+                    let second = prompt_for_number("enter another number:",&mut stdin);
+                    buffer = three_bit_and(&first, &second);
+                },
+                _ => { 
+                    println!("invalid operator: {}", buffer);
+                    continue;
+                }
+            };
+            break;
+        }
+        println!("{}", buffer);
+    }
+}
 
 pub fn one_bit_not(bit: &str) -> String {
     match parse_bit(bit) {

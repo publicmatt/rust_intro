@@ -1,62 +1,54 @@
 mod bits;
-mod config;
+mod boxit;
 
-use std::io;
-use bits::*;
+use std::path::PathBuf;
+
+use clap::{Parser, Subcommand};
+
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct Cli {
+    /// Optional name to operate on
+    name: Option<String>,
+
+    /// Sets a custom config file
+    #[arg(short, long, value_name = "FILE")]
+    config: Option<PathBuf>,
+
+    /// Turn debugging information on
+    #[arg(short, long, action = clap::ArgAction::Count)]
+    debug: u8,
+
+    #[command(subcommand)]
+    command: Option<Commands>,
+}
+#[derive(Subcommand)]
+enum Commands {
+    /// does testing things
+    Calc,
+    Boxed
+}
 
 fn main() {
-    let mut buffer = String::new();
-    let mut stdin = io::stdin();
-    let mut answer = String::new();
-    loop {
-        println!("input operator (NOT|OR|AND):");
-        stdin.read_line(&mut buffer).unwrap();
-        match buffer.trim() {
-            "NOT" => {
-                let number = prompt_for_number("enter a number:",&mut stdin);
-                answer = three_bit_not(&number);
-                break;
-            },
-            "OR" => {
-                let first = prompt_for_number("enter first number:",&mut stdin);
-                let second = prompt_for_number("enter another number:",&mut stdin);
-                answer = three_bit_or(&first, &second);
-                break;
-            },
-            "AND" => {
-                let first = prompt_for_number("enter first number:",&mut stdin);
-                let second = prompt_for_number("enter another number:",&mut stdin);
-                answer = three_bit_and(&first, &second);
-                break;
-            },
-            _ => { 
-                println!("invalid operator: {}", buffer);
-                continue;
-            }
-        };
+    let cli = Cli::parse();
+    if let Some(config_path) = cli.config.as_deref() {
+        println!("Value for config: {}", config_path.display());
     }
-    println!("{}", answer);
-}
-fn prompt_for_number(prompt: &str, stdin: &mut io::Stdin) -> String {
-    let mut buffer = String::new();
-    let mut parsed: bool = false;
-    while ! parsed {
-        println!("{}", prompt);
-        let ret = stdin.read_line(&mut buffer);
-        match ret {
-            Ok(n) => {
-                if n != 4 {
-                    println!("input should be three bits, found {}", n-1);
-                    continue;
-                }
-                parsed = true;
-            },
-            Err(e) => {
-                println!("input error: {}", e); 
-                continue;
-            }
-
-        };
+    // You can see how many times a particular flag or argument occurred
+    // Note, only flags can have multiple occurrences
+    match cli.debug {
+        0 => println!("Debug mode is off"),
+        1 => println!("Debug mode is kind of on"),
+        2 => println!("Debug mode is on"),
+        _ => println!("Don't be crazy"),
     }
-    return buffer.trim().to_owned();
+    match cli.command {
+        Some(command) => {
+            match command {
+                Commands::Calc => bits::cli::main(),
+                Commands::Boxed => boxit::cli::main(),
+            }
+        },
+        None => println!("unrecognized command")
+    }
 }
