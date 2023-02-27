@@ -1,6 +1,6 @@
 pub mod cli {
-    fn main() -> () {
-        ()
+    pub fn main() {
+        println!("not implemented");
     }
 }
 trait Hungry {

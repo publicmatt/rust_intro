@@ -1,10 +1,10 @@
 mod bits;
 mod boxit;
+mod compleat;
 mod restarant;
 
-use std::path::PathBuf;
-
 use clap::{Parser, Subcommand};
+use std::path::PathBuf;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -29,6 +29,7 @@ enum Commands {
     Calc,
     Boxed,
     Restaurant,
+    Compleat,
 }
 
 fn main() {
@@ -48,7 +49,8 @@ fn main() {
         Some(command) => match command {
             Commands::Calc => bits::cli::main(),
             Commands::Boxed => boxit::cli::main(),
-            Commands::Restaurant => println!("not implemented yet"),
+            Commands::Restaurant => restarant::cli::main(),
+            Commands::Compleat => compleat::cli::main(),
         },
         None => println!("unrecognized command"),
     }
