@@ -1,6 +1,6 @@
 pub mod cli {
-    use std::io;
     use super::*;
+    use std::io;
 
     pub fn main() {
         let padding = 10;
@@ -13,19 +13,14 @@ pub mod cli {
             }
             match line {
                 Ok(l) => lines.push(l),
-                Err(_) => panic!("error reading line")
+                Err(_) => panic!("error reading line"),
             }
         }
-        let longest: usize = lines.iter()
-            .map(|line| line.len())
-            .max()
-            .unwrap();
+        let longest: usize = lines.iter().map(|line| line.len()).max().unwrap();
         println!("longest line: {}", longest);
-        lines
-            .iter()
-            .for_each(|l| {
-                println!("{}", frame_line(l, longest + padding));
-            });
+        lines.iter().for_each(|l| {
+            println!("{}", frame_line(l, longest + padding));
+        });
     }
     fn get_n<T: io::BufRead>(mut input: T) -> usize {
         let mut buffer = String::new();
@@ -40,8 +35,14 @@ pub mod cli {
 
         #[test]
         fn test_get_n() {
-            assert_eq!(get_n(io::BufReader::new(String::from("5\nhello").as_bytes())), 5);
-            assert_eq!(get_n(io::BufReader::new(String::from("4 \nhello").as_bytes())), 4);
+            assert_eq!(
+                get_n(io::BufReader::new(String::from("5\nhello").as_bytes())),
+                5
+            );
+            assert_eq!(
+                get_n(io::BufReader::new(String::from("4 \nhello").as_bytes())),
+                4
+            );
         }
 
         #[test]
@@ -50,7 +51,6 @@ pub mod cli {
             get_n(io::BufReader::new(String::from("t \nhello").as_bytes()));
         }
     }
-
 }
 
 fn frame_line(line: &str, pad_to: usize) -> String {
@@ -71,6 +71,6 @@ mod test {
     use super::*;
     #[test]
     fn test_init() {
-        assert_eq!(frame_line("And now", 14), String::from("+ And now    +"));
+        assert_eq!(frame_line("And now", 14), String::from("+ And now     +"));
     }
 }

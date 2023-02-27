@@ -1,5 +1,6 @@
 mod bits;
 mod boxit;
+mod restarant;
 
 use std::path::PathBuf;
 
@@ -26,7 +27,8 @@ struct Cli {
 enum Commands {
     /// does testing things
     Calc,
-    Boxed
+    Boxed,
+    Restaurant,
 }
 
 fn main() {
@@ -43,12 +45,11 @@ fn main() {
         _ => println!("Don't be crazy"),
     }
     match cli.command {
-        Some(command) => {
-            match command {
-                Commands::Calc => bits::cli::main(),
-                Commands::Boxed => boxit::cli::main(),
-            }
+        Some(command) => match command {
+            Commands::Calc => bits::cli::main(),
+            Commands::Boxed => boxit::cli::main(),
+            Commands::Restaurant => println!("not implemented yet"),
         },
-        None => println!("unrecognized command")
+        None => println!("unrecognized command"),
     }
 }
