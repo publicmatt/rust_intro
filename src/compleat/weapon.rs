@@ -1,8 +1,8 @@
 pub struct Weapon {
     name: String,
-    pub damage: i32,
-    pub cost: i32,
-    pub ultimate: i32,
+    damage: i32,
+    cost: i32,
+    ultimate: i32,
 }
 impl Weapon {
     pub fn new(name: &str, damage: i32, cost: i32, ultimate: i32) -> Self {
@@ -12,6 +12,9 @@ impl Weapon {
             cost,
             ultimate,
         }
+    }
+    pub fn stats(&self) -> (i32, i32, i32) {
+        (self.damage, self.cost, self.ultimate)
     }
 }
 #[cfg(test)]

@@ -1,9 +1,9 @@
-struct Potion {
+pub struct Potion {
     name: String,
     benefit: i32,
 }
 impl Potion {
-    fn new(name: &str, benefit: Option<i32>) -> Self {
+    pub fn new(name: &str, benefit: Option<i32>) -> Self {
         let default = match benefit {
             Some(b) => b,
             None => 10,
@@ -13,7 +13,7 @@ impl Potion {
             benefit: default,
         }
     }
-    fn drink(&mut self) -> i32 {
+    pub fn drink(&mut self) -> i32 {
         let ret = self.benefit;
         self.benefit = 0;
         ret

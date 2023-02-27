@@ -1,13 +1,14 @@
+use crate::compleat::potion::Potion;
 use crate::compleat::weapon::Weapon;
 use std::fmt;
 
-struct Player {
+pub struct Player {
     name: String,
     health: i32,
     mana: i32,
 }
 impl Player {
-    fn new(name: &str) -> Self {
+    pub fn new(name: &str) -> Self {
         Player {
             name: name.to_string(),
             health: 100,
@@ -21,22 +22,36 @@ impl Player {
             self.health -= damage;
         }
     }
-    fn attack(&mut self, opponent: &mut Player, weapon: &Weapon, ultimate: Option<bool>) -> () {
-        if self.mana <= weapon.cost {
-            ()
+    pub fn attack(
+        &mut self,
+        opponent: &mut Player,
+        weapon: &Weapon,
+        is_ultimate: Option<bool>,
+    ) -> () {
+        let (damage, cost, ultimate) = weapon.stats();
+        if self.mana <= cost {
+            return ();
         }
-        let ult = match ultimate {
+        let ult = match is_ultimate {
             Some(v) => v,
             None => false,
         };
+        let d: i32;
         if ult {
-            let damage = weapon.ultimate;
-            opponent.suffer_damage(damage);
+            d = ultimate;
             self.mana = 0;
         } else {
-            let damage = weapon.damage;
-            opponent.suffer_damage(damage);
-            self.mana -= weapon.cost;
+            d = damage;
+            self.mana -= cost;
+        }
+        opponent.suffer_damage(d);
+    }
+    pub fn drink(&mut self, potion: &mut Potion) -> () {
+        let benefit = potion.drink();
+        if benefit + self.health >= 100 {
+            self.health = 100;
+        } else {
+            self.health += benefit;
         }
     }
 }
@@ -79,5 +94,22 @@ mod test {
         first.attack(&mut second, &w, Some(true));
         assert_eq!(first.mana, 0);
         assert_eq!(second.health, 65);
+    }
+    #[test]
+    fn test_drink() {
+        let mut first = Player::new("Samewise");
+        let mut p = Potion::new("elixir", Some(10));
+        first.drink(&mut p);
+        assert_eq!(first.health, 100);
+        first.health -= 5;
+        first.drink(&mut p);
+        assert_eq!(first.health, 95);
+        p = Potion::new("elixir", Some(10));
+        first.drink(&mut p);
+        assert_eq!(first.health, 100);
+        p = Potion::new("elixir", Some(10));
+        first.health -= 50;
+        first.drink(&mut p);
+        assert_eq!(first.health, 60);
     }
 }
