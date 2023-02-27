@@ -1,11 +1,11 @@
-struct Weapon {
+pub struct Weapon {
     name: String,
-    damage: i32,
-    cost: i32,
-    ultimate: i32,
+    pub damage: i32,
+    pub cost: i32,
+    pub ultimate: i32,
 }
 impl Weapon {
-    fn new(name: &str, damage: i32, cost: i32, ultimate: i32) -> Self {
+    pub fn new(name: &str, damage: i32, cost: i32, ultimate: i32) -> Self {
         Weapon {
             name: name.to_string(),
             damage,
