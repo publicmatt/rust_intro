@@ -1,7 +1,10 @@
+mod binary_tree;
 mod bits;
 mod boxit;
 mod compleat;
 mod restarant;
+mod skip_list;
+mod snake;
 
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;
@@ -27,9 +30,12 @@ struct Cli {
 enum Commands {
     /// does testing things
     Calc,
-    Boxed,
+    Boxit,
     Restaurant,
     Compleat,
+    Binarytree,
+    Skiplist,
+    Snake,
 }
 
 fn main() {
@@ -48,9 +54,12 @@ fn main() {
     match cli.command {
         Some(command) => match command {
             Commands::Calc => bits::cli::main(),
-            Commands::Boxed => boxit::cli::main(),
+            Commands::Boxit => boxit::cli::main(),
             Commands::Restaurant => restarant::cli::main(),
             Commands::Compleat => compleat::cli::main(),
+            Commands::Binarytree => binary_tree::cli::main(),
+            Commands::Skiplist => skip_list::cli::main(),
+            Commands::Snake => snake::cli::main(),
         },
         None => println!("unrecognized command"),
     }
